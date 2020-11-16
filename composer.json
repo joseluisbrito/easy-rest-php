@@ -1,0 +1,17 @@
+{
+    "name": "joseluisbrito/easy-rest-php",
+    "description": "Easy Rest using PHP7",
+    "type": "project",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "José Brito",
+            "email": "joseluisbrito@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Rest\\": "rest/"
+        }
+    }
+}
