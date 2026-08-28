@@ -26,14 +26,22 @@ class Rest {
       public $HTTP_NOT_ACCEPTABLE     = 406;
       public $HTTP_INTERNAL_ERROR     = 500;
 
-      private $conn;
       private $token;
 
       public function __construct($allowed_method) {
           try {
               // Chequear metodo si es GET, POST, PUT, DELETE, etc:
               $this->reqMethod = $_SERVER['REQUEST_METHOD'];
-
+            
+              // Si el method es un OPTIONS, es un preflight:
+              if($this->reqMethod == 'OPTIONS') {
+                header('Access-Control-Allow-Origin: *');
+                header('Access-Control-Allow-Methods: ' . $allowed_method . ', OPTIONS');
+                header('Access-Control-Allow-Headers: Content-Type, Authorization');
+                // TODO: Si se necesita un header custom, agregarlo en esta
+                // sección de preflight, para que no se pierda.
+                exit();
+              }
               // Asignar el ContentType:
               $headers = $this->getRequestHeaders();
 
@@ -107,7 +115,6 @@ class Rest {
             else {
                 echo json_encode($data, JSON_UNESCAPED_SLASHES);
             }
-            $this->conn = null; //"Cierro" la conexión
             exit(); //Termino la ejecución
           } catch (\Throwable $t) {
             throw $t;
