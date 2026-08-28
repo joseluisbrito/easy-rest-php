@@ -157,9 +157,11 @@ class Rest {
       }
 
       public function checkAllowedContentType() {
+        if(($this->reqMethod == 'POST' || $this->reqMethod == 'PUT') && $this->reqConType != 'application/json') {
           if($this->reqConType != 'application/json') {
               $this->response("Petición no aceptable", $this->HTTP_NOT_ACCEPTABLE);
           }
+        }
       }
 
 }
