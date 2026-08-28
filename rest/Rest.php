@@ -35,7 +35,7 @@ class Rest {
               $this->reqMethod = $_SERVER['REQUEST_METHOD'];
 
               // Asignar el ContentType:
-              $headers = getallheaders();
+              $headers = $this->getRequestHeaders();
 
               if(!isset($headers['Content-Type']) && isset($headers['content-type']))
               {
@@ -63,6 +63,29 @@ class Rest {
           } catch (\Throwable $t) {
               throw $t;
           }
+      }
+
+      private function getRequestHeaders() {
+        // Comprobamos si PHP implementa la funcion getallheaders:
+        if(function_exists('getallheaders')) {
+            return getallheaders();
+        }
+        else {
+            $headers=[];
+            // En nginx no suele implementarla.
+            // Tomamos los headers más comunes:
+            foreach($_SERVER as $name => $value) {
+                if(substr($name, 0, 5) == 'HTTP_') {
+                    $headerName = substr($name, 5);
+                    $headerName = strtolower($headerName);
+                    $headerName = str_replace('_',' ', $headerName);
+                    $headerName = ucwords($headerName);
+                    $headerName = str_replace(' ', '-',$headerName);
+                    $headers[$headerName] = $value;
+                }
+            }
+            return $headers;
+        }
       }
 
       public function getBody() {
